@@ -23,7 +23,7 @@ def extract_songs(items):
         track_name = item['track']['name']
         if track_name not in songs_dict:
             songs_dict[track_name] = 0
-        songs_dict[track_name] += int(item['track']['duration_ms']) * 60000
+        songs_dict[track_name] += int(item['track']['duration_ms']) / 60000
     return pd.DataFrame(list(songs_dict.items()),columns=['Name','Minutes'])
 
 
