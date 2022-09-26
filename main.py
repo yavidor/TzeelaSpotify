@@ -1,17 +1,21 @@
 import requests
 import pandas as pd
 
-URL = 'https://api.spotify.com'
-token = 'BQDXLRoZ2aJSEIvUdGabTfwbs48Rvi_EKOhRrp_i-qQtryvTA8xU00JXR6oDgZLE-nA_5Q5EpQcra4RxCohim77loqTdcwEbdQxVTRSPOAxvdlglJpGljPUxWP3awRKj8ZVxj1EKsF0cHFcLoviT5zx-HctLXxp0rFjCmU8HZSDmenJ7kj-1KLXTBmqXETs-N_G_WOr1AmVe-MScX1Bm_VQhwRcOvXUrmL9AE8B42oxPprAAOROdELEG5g2Ix9zDvXGdLRKnei3dPepB4c9c9iU9Xeo5GehV7RU8HOLs3wxVktkFPQ0YfJ_b_uW5NPgubZQnVyLIk9Fe'
+spotURL = 'https://api.spotify.com'
+token = 'BQDXLRoZ2aJSEIvUdGabTfwbs48Rvi_EKOhRrp_i-qQtryvTA8xU00JXR6oDgZLE' \
+        '-nA_5Q5EpQcra4RxCohim77loqTdcwEbdQxVTRSPOAxvdlglJpGljPUxWP3awRKj8ZVxj1EKsF0cHFcLoviT5zx' \
+        '-HctLXxp0rFjCmU8HZSDmenJ7kj-1KLXTBmqXETs-N_G_WOr1AmVe' \
+        '-MScX1Bm_VQhwRcOvXUrmL9AE8B42oxPprAAOROdELEG5g2Ix9zDvXGdLRKn' \
+        'ei3dPepB4c9c9iU9Xeo5GehV7RU8HOLs3wxVktkFPQ0YfJ_b_uW5NPgubZQnVyLIk9Fe'
 auth = {'Authorization': f'Bearer {token}'}
 
 
-def get_listened(items, nexturl):
+def get_listened(items, next_url):
     if len(items) == 0:
-        url = f'{URL}/v1/me/player/recently-played?limit=50'
+        api_url = f'{spotURL}/v1/me/player/recently-played'
     else:
-        url = nexturl
-    response = requests.get(url, headers=auth).json()
+        api_url = next_url
+    response = requests.get(api_url, headers=auth).json()
     items.extend(response['items'])
     if len(response['items']) == 0:
         return items
@@ -29,11 +33,7 @@ def extract_songs(items):
 
 
 def main():
-    track_list = get_listened([], 0)
-    track_list = extract_songs(track_list)
-    track_list = track_list.sort_values(by=['Minutes'], ascending=False)
-    print(track_list)
-    print(len(track_list))
+    track_list = extract_songs(get_listened([], 0)).sort_values(by=['Minutes'], ascending=False)
     track_list.to_csv('file.csv')
 
 
